@@ -32,7 +32,7 @@ docker create -t --restart=unless-stopped \
  -v ~sbfspot/config/SBFspot.cfg:/opt/sbfspot/SBFspot.cfg \
  --privileged \
  --name sbfspot-collector \
- registry-nexus.renait.nl/sbfspot-sqlite:3.7.1
+ solarexplorer/sbfspot-sqlite:3.7.1
 ```
 
 ## Running SBFspot uploader
@@ -42,7 +42,7 @@ docker run -dt \
  -v /home/sbfspot/data:/var/smadata \
  -v /home/sbfspot/config/SBFspotUpload.cfg:/opt/sbfspot/SBFspotUpload.cfg \
  --name sbfspot-uploader \
- registry-nexus.renait.nl/sbfspot-sqlite:3.7.1 /opt/sbfspot/SBFspotUploadDaemon
+ solarexplorer/sbfspot-sqlite:3.7.1 /opt/sbfspot/SBFspotUploadDaemon
 ```
 
 ## Configure crontab on Docker host
