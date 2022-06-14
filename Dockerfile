@@ -1,7 +1,7 @@
 FROM debian:stretch AS builder
 
 # BUILD STAGE
-ENV SBFSPOT_VERSION=3.8.3
+ENV SBFSPOT_VERSION=3.9.5
 
 # From version 3.0 no longer uploads to PVoutput.org. This functionality is now in the hands of an upload service (Windows) or daemon (Linux).
 # So libcurl3-dev is needed only if you are uploading data to PVoutput.org.
