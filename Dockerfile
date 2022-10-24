@@ -1,7 +1,7 @@
-FROM debian:stretch AS builder
+FROM debian:bullseye AS builder
 
 # BUILD STAGE
-ENV SBFSPOT_VERSION=3.8.3
+ENV SBFSPOT_VERSION=3.9.4
 
 # From version 3.0 no longer uploads to PVoutput.org. This functionality is now in the hands of an upload service (Windows) or daemon (Linux).
 # So libcurl3-dev is needed only if you are uploading data to PVoutput.org.
@@ -32,7 +32,7 @@ RUN cd SBFspotUploadDaemon && make sqlite && make install_sqlite && cd ..
 
 # Copy
 
-FROM debian:stretch-slim
+FROM debian:bullseye-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SBFSPOTDIR=/opt/sbfspot
@@ -52,13 +52,12 @@ RUN groupadd -g ${gid} ${group} \
 RUN apt-get update \
 	&& apt-get install -y \
 	locales \
-	bluetooth \
-	libbluetooth-dev \
-	libboost-date-time-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev \
-	sqlite3 \
-	libsqlite3-dev \
-	libcurl3-dev \
-	&& rm -rf /var/lib/apt/lists/*
+	bluetooth libbluetooth-dev \
+    libboost-date-time-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev \
+	sqlite3 libsqlite3-dev \
+	mosquitto-clients \
+	ca-certificates \
+	&& apt autoremove && apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
@@ -66,18 +65,16 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 
 ENV LANG=en_US.UTF-8
 
-COPY --from=builder /usr/local/bin/sbfspot.3 $SBFSPOTDIR
-
-RUN chown -R ${user}:${group} $SBFSPOTDIR
-
 # Setup data directory
 RUN mkdir $SMADATA && chown -R ${user}:${group} $SMADATA
 COPY /docker-entrypoint.sh /
 RUN chmod a+x /docker-entrypoint.sh
 
-VOLUME ["/var/smadata", "/opt/sbfspot"]
-
 USER ${USER}
+
+COPY --from=builder /usr/local/bin/sbfspot.3 $SBFSPOTDIR
+
+VOLUME ["/var/smadata", "/opt/sbfspot"]
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
