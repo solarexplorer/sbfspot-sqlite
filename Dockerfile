@@ -1,7 +1,7 @@
 FROM debian:bullseye AS builder
 
 # BUILD STAGE
-ENV SBFSPOT_VERSION=3.9.4
+ENV SBFSPOT_VERSION=3.9.6
 
 # From version 3.0 no longer uploads to PVoutput.org. This functionality is now in the hands of an upload service (Windows) or daemon (Linux).
 # So libcurl3-dev is needed only if you are uploading data to PVoutput.org.
@@ -77,6 +77,4 @@ COPY --from=builder /usr/local/bin/sbfspot.3 $SBFSPOTDIR
 VOLUME ["/var/smadata", "/opt/sbfspot"]
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
 CMD ["/opt/sbfspot/SBFspot"]
-
