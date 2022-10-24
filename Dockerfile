@@ -1,4 +1,4 @@
-FROM debian:stretch AS builder
+FROM debian:bullseye AS builder
 
 # BUILD STAGE
 ENV SBFSPOT_VERSION=3.9.4
@@ -32,7 +32,7 @@ RUN cd SBFspotUploadDaemon && make sqlite && make install_sqlite && cd ..
 
 # Copy
 
-FROM debian:stretch-slim
+FROM debian:bullseye-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SBFSPOTDIR=/opt/sbfspot
