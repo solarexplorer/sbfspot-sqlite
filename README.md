@@ -120,8 +120,15 @@ and edit the crontab file by adding the following line:
 
 ## 6. Build this image locally
 
+Setup QEMU
+
+```shell
+docker run --rm --privileged tonistiigi/binfmt:latest --install all
+```
+
 Build image and load into local docker.
 
 ```shell
-docker buildx build -t solarexplorer/sbfspot-sqlite --load .
+docker buildx create --name all --platform linux/amd64,linux/arm64,linux/arm/v7
+docker buildx build --platform=linux/amd64,linux/arm64,linux/arm/v7 -t solarexplorer/sbfspot-sqlite --load . 
 ```
