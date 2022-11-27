@@ -52,12 +52,15 @@ RUN groupadd -g ${gid} ${group} \
 RUN apt-get update \
 	&& apt-get install -y \
 	locales \
-	bluetooth libbluetooth-dev \
-    libboost-date-time-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev \
-	sqlite3 libsqlite3-dev \
+	bluetooth \
+	libbluetooth-dev \
+	libboost-date-time-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev \
+	sqlite3 \
+	libsqlite3-dev \
+	libcurl3-dev \
 	mosquitto-clients \
 	ca-certificates \
-	&& apt autoremove && apt clean && rm -rf /var/lib/apt/lists/*
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
@@ -65,16 +68,20 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 
 ENV LANG=en_US.UTF-8
 
+COPY --from=builder /usr/local/bin/sbfspot.3 $SBFSPOTDIR
+
+RUN chown -R ${user}:${group} $SBFSPOTDIR
+
 # Setup data directory
 RUN mkdir $SMADATA && chown -R ${user}:${group} $SMADATA
 COPY /docker-entrypoint.sh /
 RUN chmod a+x /docker-entrypoint.sh
 
-USER ${USER}
-
-COPY --from=builder /usr/local/bin/sbfspot.3 $SBFSPOTDIR
-
 VOLUME ["/var/smadata", "/opt/sbfspot"]
 
+USER ${USER}
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
 CMD ["/opt/sbfspot/SBFspot"]
+
