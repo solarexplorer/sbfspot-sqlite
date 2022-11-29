@@ -57,6 +57,7 @@ RUN apt-get update \
 	libboost-date-time-dev libboost-system-dev libboost-filesystem-dev libboost-regex-dev \
 	sqlite3 \
 	libsqlite3-dev \
+	curl \
 	libcurl3-dev \
 	mosquitto-clients \
 	ca-certificates \
